@@ -1,15 +1,23 @@
-import { MenuIcon, SparkleIcon, XIcon } from "lucide-react";
+import {
+  DollarSignIcon,
+  FolderEditIcon,
+  GalleryHorizontalEnd,
+  MenuIcon,
+  SparkleIcon,
+  XIcon,
+} from "lucide-react";
 import { GhostButton, PrimaryButton } from "./Buttons";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { assets } from "../assets/assets";
 import { useClerk, useUser, UserButton } from "@clerk/react";
-import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const { user } = useUser();
   const { openSignIn, openSignUp } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
 
   const navLinks = [
     { name: "Home", href: "/#" },
@@ -27,34 +35,34 @@ export default function Navbar() {
       transition={{ type: "spring", stiffness: 250, damping: 70, mass: 1 }}
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between bg-black/50 backdrop-blur-md border border-white/4 rounded-2xl p-3">
-        <a href="/#">
-          <img src="/logo.svg" alt="CoreClips branding logo" className="h-10" />
-        </a>
+        <Link to="/" onClick={() => scrollTo(0, 0)}>
+          <img src={assets.logo} alt="logo" className="h-8" />
+        </Link>
 
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
           {navLinks.map((link) => (
-            <a
-              href={link.href}
+            <Link
+              onClick={() => scrollTo(0, 0)}
+              to={link.href}
               key={link.name}
               className="hover:text-pink-500 transition"
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
 
-        {/* Authentication */}
         {!user ? (
           <div className="hidden md:flex items-center gap-3">
             <button
-              className="text-sm font-medium text-gray-300 hover:text-white transition max-sm:hidden"
               onClick={() => openSignIn()}
+              className="text-sm font-medium text-gray-300 hover:text-pink-500 transition max-sm:hidden"
             >
               Sign in
             </button>
             <PrimaryButton
-              className="max-sm:text-xs hidden sm:inline-block"
               onClick={() => openSignUp()}
+              className="max-sm:text-xs hidden sm:inline-block"
             >
               Get Started
             </PrimaryButton>
@@ -76,17 +84,17 @@ export default function Navbar() {
                 />
                 <UserButton.Action
                   label="My Generations"
-                  labelIcon={<SparkleIcon size={14} />}
+                  labelIcon={<FolderEditIcon size={14} />}
                   onClick={() => navigate("/my-generations")}
                 />
                 <UserButton.Action
                   label="Community"
-                  labelIcon={<SparkleIcon size={14} />}
+                  labelIcon={<GalleryHorizontalEnd size={14} />}
                   onClick={() => navigate("/community")}
                 />
                 <UserButton.Action
                   label="Plans"
-                  labelIcon={<SparkleIcon size={14} />}
+                  labelIcon={<DollarSignIcon size={14} />}
                   onClick={() => navigate("/plans")}
                 />
               </UserButton.MenuItems>
@@ -101,10 +109,15 @@ export default function Navbar() {
         )}
       </div>
       <div
-        className={`flex flex-col items-center justify-center gap-6 text-lg font-medium fixed inset-0 bg-black/40 backdrop-blur-md z-50 transition-all duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`flex flex-col items-center justify-center gap-6 text-lg font-medium fixed inset-0 bg-black/50 backdrop-blur-md z-50 transition-all duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         {navLinks.map((link) => (
-          <a key={link.name} href={link.href} onClick={() => setIsOpen(false)}>
+          <a
+            key={link.name}
+            href={link.href}
+            onClick={() => setIsOpen(false)}
+            className="hover:text-pink-500"
+          >
             {link.name}
           </a>
         ))}
@@ -114,7 +127,7 @@ export default function Navbar() {
             setIsOpen(false);
             openSignIn();
           }}
-          className="font-medium text-gray-300 hover:text-white transition"
+          className="font-medium text-gray-300 hover:text-pink-500 transition"
         >
           Sign in
         </button>
@@ -129,7 +142,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setIsOpen(false)}
-          className="rounded-md bg-white p-2 text-gray-800 ring-white active:ring-2"
+          className="rounded-md bg-pink-700 p-2 text-white hover:bg-pink-500 ring-white active:ring-2"
         >
           <XIcon />
         </button>

@@ -34,14 +34,15 @@ const Generator = () => {
   };
 
   return (
-    <div className="min-h-screen text-white p-6 md:p-12 mt-28">
-      <form className="max-w-4xl mx-auto mb-40">
+    <div className="min-h-screen text-pink-500 p-6 md:p-12 mt-28">
+      <form onSubmit={handleGenerate} className="max-w-4xl mx-auto mb-40">
         <Title
           heading="Create In-Context Image"
           description="Upload your model and product images to generate stunning UGC, short-form videos and social media posts."
         />
 
         <div className="flex gap-20 max-sm:flex-col items-start justify-between">
+          {/* left col */}
           <div className="flex flex-col w-full sm:max-w-60 gap-8 mt-8 mb-12">
             <UploadZone
               label="Product Image"
@@ -57,9 +58,13 @@ const Generator = () => {
             />
           </div>
 
+          {/* right col */}
           <div className="w-full">
             <div className="mb-4 text-gray-300">
-              <label htmlFor="name" className="block text-sm mb-4">
+              <label
+                htmlFor="name"
+                className="block text-sm mb-4 font-semibold text-pink-500"
+              >
                 Project Name
               </label>
               <input
@@ -74,7 +79,10 @@ const Generator = () => {
             </div>
 
             <div className="mb-4 text-gray-300">
-              <label htmlFor="productName" className="block text-sm mb-4">
+              <label
+                htmlFor="productName"
+                className="block text-sm mb-4 font-semibold text-pink-500"
+              >
                 Product Name
               </label>
               <input
@@ -91,7 +99,7 @@ const Generator = () => {
             <div className="mb-4 text-gray-300">
               <label
                 htmlFor="productDescription"
-                className="block text-sm mb-4"
+                className="block text-sm mb-4 font-semibold text-pink-500"
               >
                 Product Description &nbsp;
                 <span className="text-xs text-pink-400">(Optional)</span>
@@ -107,21 +115,26 @@ const Generator = () => {
             </div>
 
             <div className="mb-4 text-gray-300">
-              <label className="block text-sm mb-4">Aspect Ratio</label>
+              <label className="block text-sm mb-4 font-semibold text-pink-500">
+                Aspect Ratio
+              </label>
               <div className="flex gap-3">
                 <RectangleVerticalIcon
                   onClick={() => setAspectRatio("9:16")}
-                  className={`p-2.5 size-13 bg-white/6 rounded transition-all ring-2 ring-transparent cursor-pointer ${aspectRatio === "9:16" ? "ring-pink-500 bg-white/20" : ""}`}
+                  className={`p-2.5 size-13 rounded transition-all ring-2 cursor-pointer ${aspectRatio === "9:16" ? "ring-pink-500/50 bg-pink-300/20" : "bg-white/6 ring-transparent"}`}
                 />
                 <RectangleHorizontalIcon
                   onClick={() => setAspectRatio("16:9")}
-                  className={`p-2.5 size-13 bg-white/6 rounded transition-all ring-2 ring-transparent cursor-pointer ${aspectRatio === "16:9" ? "ring-pink-500 bg-white/20" : ""}`}
+                  className={`p-2.5 size-13 rounded transition-all ring-2 cursor-pointer ${aspectRatio === "16:9" ? "ring-pink-500/50 bg-pink-300/20" : "bg-white/6 ring-transparent"}`}
                 />
               </div>
             </div>
 
             <div className="mb-4 text-gray-300">
-              <label htmlFor="userPrompt" className="block text-sm mb-4">
+              <label
+                htmlFor="userPrompt"
+                className="block text-sm mb-4 font-semibold text-pink-500"
+              >
                 User Prompt &nbsp;
                 <span className="text-xs text-pink-400">(Optional)</span>
               </label>
@@ -140,7 +153,7 @@ const Generator = () => {
         <div className="flex justify-center mt-10">
           <PrimaryButton
             disabled={isGenerating}
-            className="px-10 py-3 rounded-md disabled:opacity-70 disabled:cursor-not-allowed"
+            className="px-10 py-3 text-pink-200 rounded-md disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isGenerating ? (
               <>

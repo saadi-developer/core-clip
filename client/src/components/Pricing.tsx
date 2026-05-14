@@ -1,5 +1,5 @@
-import { PricingTable } from "@clerk/react";
 import Title from "./Title";
+import { PricingTable } from "@clerk/react";
 
 export default function Pricing() {
   return (
@@ -7,8 +7,8 @@ export default function Pricing() {
       <div className="max-w-6xl mx-auto px-4">
         <Title
           title="Pricing"
-          heading="Efficient, transparent pricing"
-          description="Flexible agency packages designed to fit startups, growing teams and established brands."
+          heading="Pricing plans suitable for you"
+          description="Our pricing plans are simple, transparent and flexible. Choose the plan that best suits your needs the best."
         />
 
         <div className="flex flex-wrap items-center justify-center max-w-5xl mx-auto">
@@ -16,12 +16,14 @@ export default function Pricing() {
             appearance={{
               variables: {
                 colorBackground: "none",
-                colorPrimaryForeground: "#ffffff",
+                colorForeground: "#ec4899",
               },
               elements: {
-                pricingTableCardBody: "bg-white/5",
+                pricingTableCardBody: "bg-white/8",
                 pricingTableCardHeader: "bg-white/10",
-                switchThumb: "bg-white",
+                switchThumb: "bg-pink-500",
+                pricingTableCardFooterButton:
+                  "!bg-pink-500 !py-2.5 !outline-0 !border-none",
               },
             }}
           />

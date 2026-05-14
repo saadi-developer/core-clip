@@ -27,7 +27,7 @@ export default function Hero() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div className="text-left">
               <motion.a
-                href="#"
+                href="https://prebuiltui.com/tailwind-templates?ref=pixel-forge"
                 className="inline-flex items-center gap-3 pl-3 pr-4 py-1.5 rounded-full bg-white/10 mb-6 justify-start"
                 initial={{ y: 60, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
@@ -51,8 +51,8 @@ export default function Hero() {
                     />
                   ))}
                 </div>
-                <span className="text-xs text-gray-200/90">
-                  Trusted by 10K+ creators/advertisers
+                <span className="text-xs text-pink-200/90">
+                  Trusted by 10k+ creators
                 </span>
               </motion.a>
 
@@ -69,14 +69,14 @@ export default function Hero() {
                   delay: 0.1,
                 }}
               >
-                Create viral UGC <br />
+                Create videos & pictures <br />
                 <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-300 to-pink-400">
-                  Clips, within no time
+                  in seconds
                 </span>
               </motion.h1>
 
               <motion.p
-                className="text-gray-300 max-w-lg mb-8"
+                className="text-pink-300 max-w-lg mb-8"
                 initial={{ y: 60, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
@@ -88,9 +88,9 @@ export default function Hero() {
                   delay: 0.2,
                 }}
               >
-                Just upload the product images and a model's photo - Our AI
-                instantly produces professional lifestyle imagery and short-form
-                videos optimized for commercials & reels.
+                Upload sample images & a target photo - Our AI instantly
+                produces professional imagery and short-form videos, optimized
+                for commercials, reels & personal branding.
               </motion.p>
 
               <motion.div
@@ -108,19 +108,19 @@ export default function Hero() {
               >
                 <a href="/" className="w-full sm:w-auto">
                   <PrimaryButton className="max-sm:w-full py-3 px-7">
-                    Generate Free Clips
+                    Start Generating
                     <ArrowRightIcon className="size-4" />
                   </PrimaryButton>
                 </a>
 
-                <GhostButton className="max-sm:w-full max-sm:justify-center py-3 px-5">
+                <GhostButton className="max-sm:w-full max-sm:justify-center py-3 px-5 text-pink-400">
                   <PlayIcon className="size-4" />
                   Watch Demo
                 </GhostButton>
               </motion.div>
 
               <motion.div
-                className="flex sm:inline-flex overflow-hidden items-center max-sm:justify-center text-sm text-gray-200 bg-white/10 rounded"
+                className="flex sm:inline-flex overflow-hidden items-center max-sm:justify-center text-sm text-pink-200 bg-white/10 rounded"
                 initial={{ y: 60, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
@@ -135,9 +135,9 @@ export default function Hero() {
                 <div className="flex items-center gap-2 p-2 px-3 sm:px-6.5 hover:bg-white/3 transition-colors">
                   <ZapIcon className="size-4 text-pink-500" />
                   <div>
-                    <div>Save time to create</div>
-                    <div className="text-xs text-gray-400">
-                      Optimized social formats
+                    <div>Seconds to create</div>
+                    <div className="text-xs text-pink-400">
+                      Optimized formats
                     </div>
                   </div>
                 </div>
@@ -148,8 +148,8 @@ export default function Hero() {
                   <CheckIcon className="size-4 text-pink-500" />
                   <div>
                     <div>Commercial rights</div>
-                    <div className="text-xs text-gray-400">
-                      Use anywhere, no fuss!
+                    <div className="text-xs text-pink-400">
+                      Use anywhere, no fuss
                     </div>
                   </div>
                 </div>
@@ -178,12 +178,12 @@ export default function Hero() {
                     className="w-full h-full object-cover object-center"
                   />
 
-                  <div className="absolute left-4 top-4 px-3 py-1 rounded-full bg-black/15 backdrop-blur-sm text-xs">
-                    Social Ready - 9:16 & 16:9
+                  <div className="absolute left-4 top-4 px-3 py-1 rounded-full bg-pink-500 backdrop-blur-sm text-xs">
+                    Platform-Ready • 9:16 & 16:9
                   </div>
 
                   <div className="absolute right-4 bottom-4">
-                    <button className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-white/6 backdrop-blur-sm hover:bg-white/10 transition focus:outline-none">
+                    <button className="inline-flex items-center gap-2 rounded-full px-4 py-2 bg-pink-500/50 backdrop-blur-sm hover:bg-pink-500/80 transition focus:outline-none">
                       <PlayIcon className="size-4" />
                       <span className="text-xs">Preview</span>
                     </button>
@@ -215,7 +215,7 @@ export default function Hero() {
                   </motion.div>
                 ))}
                 <motion.div
-                  className="text-sm text-gray-400 ml-2 flex items-center gap-2"
+                  className="text-sm text-pink-400 ml-2 flex items-center gap-2"
                   initial={{ y: 60, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
@@ -232,7 +232,7 @@ export default function Hero() {
 
                     <span className="relative inline-flex size-2 rounded-full bg-pink-600" />
                   </div>
-                  +20 more
+                  + 20 more
                 </motion.div>
               </div>
             </motion.div>
@@ -254,7 +254,7 @@ export default function Hero() {
               {trustedLogosText.concat(trustedLogosText).map((logo, i) => (
                 <span
                   key={i}
-                  className="mx-6 text-sm md:text-base font-semibold text-gray-400 hover:text-gray-300 tracking-wide transition-colors"
+                  className="mx-6 text-sm md:text-base font-semibold text-pink-500 hover:text-pink-400 tracking-wide transition-colors cursor-default"
                 >
                   {logo}
                 </span>

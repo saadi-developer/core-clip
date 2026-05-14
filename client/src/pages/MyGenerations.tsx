@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import type { Project } from "../types";
-import { dummyGenerations } from "../assets/dummy-data";
 import { Loader2Icon } from "lucide-react";
 import ProjectCard from "../components/ProjectCard";
 import { PrimaryButton } from "../components/Buttons";
+import { dummyGenerations } from "../assets/assets";
 
 const MyGenerations = () => {
   const [generations, setGenerations] = useState<Project[]>([]);
@@ -13,7 +13,7 @@ const MyGenerations = () => {
     setTimeout(() => {
       setGenerations(dummyGenerations);
       setLoading(false);
-    }, 3000);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -25,13 +25,13 @@ const MyGenerations = () => {
       <Loader2Icon className="size-7 animate-spin text-pink-500" />
     </div>
   ) : (
-    <div className="min-h-screen text-white p-6 md:p-12 my-28">
+    <div className="min-h-screen text-pink-500 p-6 md:p-12 my-28">
       <div className="max-w-6xl mx-auto">
         <header className="mb-12">
           <h1 className="text-3xl md:text-4xl font-semibold mb-4">
             My Generations
           </h1>
-          <p className="text-gray-400">
+          <p className="text-pink-300">
             View and manage your AI-generated content
           </p>
         </header>
@@ -50,10 +50,13 @@ const MyGenerations = () => {
         {generations.length === 0 && (
           <div className="text-center py-20 bg-white/5 rounded-xl border border-white/10">
             <h3 className="text-xl font-medium mb-2">No generations yet</h3>
-            <p className="text-gray-400 mb-2">
+            <p className="text-pink-300 mb-2">
               Start creating stunning product photos today
             </p>
-            <PrimaryButton onClick={() => (window.location.href = "/generate")}>
+            <PrimaryButton
+              onClick={() => (window.location.href = "/generate")}
+              className="text-pink-300"
+            >
               Create New Generation
             </PrimaryButton>
           </div>

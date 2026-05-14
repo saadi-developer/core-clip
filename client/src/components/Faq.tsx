@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "lucide-react";
 import Title from "./Title";
-import { faqData } from "../assets/dummy-data";
+import { faqData } from "../assets/assets";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 
@@ -12,7 +12,7 @@ export default function Faq() {
         <Title
           title="FAQ"
           heading="Frequently asked questions"
-          description="Everything you need to know about using platform. If you have any questions, feel free to contact us."
+          description="Everything you need to know about working with our agency. If you have more questions, feel free to reach out."
         />
 
         <div className="space-y-3">
@@ -41,10 +41,10 @@ export default function Faq() {
               className="group bg-white/6 rounded-xl select-none"
             >
               <summary className="flex items-center justify-between p-4 cursor-pointer">
-                <h4 className="font-medium">{faq.question}</h4>
-                <ChevronDownIcon className="w-5 h-5 text-gray-300 group-open:rotate-180 transition-transform" />
+                <h4 className="font-medium text-pink-500">{faq.question}</h4>
+                <ChevronDownIcon className="w-5 h-5 text-pink-500 group-open:rotate-180 transition-transform" />
               </summary>
-              <p className="p-4 pt-0 text-sm text-gray-300 leading-relaxed">
+              <p className="p-4 pt-0 text-sm text-pink-300 leading-relaxed">
                 {faq.answer}
               </p>
             </motion.details>

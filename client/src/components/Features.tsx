@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { featuresData } from "../assets/dummy-data";
+import { featuresData } from "../assets/assets";
 import Title from "./Title";
 import { motion } from "framer-motion";
 
@@ -11,7 +11,7 @@ export default function Features() {
         <Title
           title="Features"
           heading="Built for modern brands"
-          description="Our AI instantly produces professional lifestyle imagery and short-form videos optimized for commercials & reels."
+          description="Our AI instantly produces professional imagery and short form videos optimized for Commercials & Reels."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -44,11 +44,11 @@ export default function Features() {
               }}
               className="rounded-2xl p-6 bg-white/3 border border-white/6"
             >
-              <div className="w-12 h-12 rounded-lg bg-pink-900/20 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-lg bg-pink-900/20 text-pink-500 flex items-center justify-center mb-4">
                 {feature.icon}
               </div>
-              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-pink-500 mb-2">{feature.title}</h3>
+              <p className="text-pink-300 text-sm leading-relaxed">
                 {feature.desc}
               </p>
             </motion.div>

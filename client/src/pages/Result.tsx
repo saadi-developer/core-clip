@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import type { Project } from "../types";
-import { dummyGenerations } from "../assets/dummy-data";
 import {
   ImageIcon,
   Loader2Icon,
-  RefreshCcwIcon,
+  RefreshCwIcon,
   SparkleIcon,
   Video,
   VideoIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GhostButton, PrimaryButton } from "../components/Buttons";
+import { dummyGenerations } from "../assets/assets";
 
 const Results = () => {
   const [project, setProjectData] = useState<Project>({} as Project);
@@ -21,7 +21,7 @@ const Results = () => {
     setTimeout(() => {
       setProjectData(dummyGenerations[0]);
       setLoading(false);
-    }, 3000);
+    }, 1500);
   };
 
   const handleGeneratedVideo = async () => {
@@ -39,7 +39,7 @@ const Results = () => {
   ) : (
     <div className="min-h-screen text-white p-6 md:p-12 mt-20">
       <div className="max-w-6xl mx-auto">
-        <header className="flex justify-between items-center mb-8">
+        <header className="flex justify-between items-center mb-8 text-pink-500">
           <h1 className="text-2xl md:text-3xl font-medium">
             Generation Result
           </h1>
@@ -47,8 +47,8 @@ const Results = () => {
             to="/generate"
             className="btn-secondary text-sm flex items-center gap-2"
           >
-            <RefreshCcwIcon className="w-4 h-4" />
-            <p className="max-sm:hidden">New Generation</p>
+            <RefreshCwIcon className="w-4 h-4 text-pink-500" />
+            <p className="max-sm:hidden text-pink-500">New Generation</p>
           </Link>
         </header>
 
@@ -80,7 +80,7 @@ const Results = () => {
           </div>
 
           {/* Sidebar Actions */}
-          <div className="space-y-6">
+          <div className="space-y-6 text-pink-500">
             {/* download buttons */}
             <div className="glass-panel p-6 rounded-2xl">
               <h3 className="text-xl font-semibold mb-4">Actions</h3>
