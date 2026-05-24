@@ -11,7 +11,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// Allow requests from your specific local development origin
+app.use(cors({ origin: "http://localhost:5173" }));
 
 app.post(
   "/api/clerk",
