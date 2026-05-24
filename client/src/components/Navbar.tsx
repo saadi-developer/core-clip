@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   DollarSignIcon,
   FolderEditIcon,
@@ -34,24 +33,28 @@ export default function Navbar() {
     { name: "Plans", href: "/plans" },
   ];
 
-  const getUserCredits = async () => {
-    try {
-      const token = await getToken();
-      const { data } = await api.get("/api/user/credits", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setCredits(data.credits);
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || error.message);
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    if (user) {
-      (async () => await getUserCredits())();
-    }
-  }, [user, pathname]);
+    if (!user) return;
+
+    const getUserCredits = async () => {
+      try {
+        const token = await getToken();
+        const { data } = await api.get("/api/user/credits", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCredits(data.credits);
+      } catch (error: unknown) {
+        const message =
+          typeof error === "object" && error !== null && "response" in error
+            ? (error as any)?.response?.data?.message
+            : (error as Error)?.message;
+        toast.error(message || "An error occurred");
+        console.log(error);
+      }
+    };
+
+    void getUserCredits();
+  }, [user, pathname, getToken]);
 
   return (
     <motion.nav
