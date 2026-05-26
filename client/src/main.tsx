@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")! as HTMLElement).render(
     appearance={{
       theme: dark,
       Variables: {
-        colorPrimary: "#4f39f6",
+        colorPrimary: "#f6339a",
         colorTextOnPrimaryBackground: "#ffffff",
       },
     }}
