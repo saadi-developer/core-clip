@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { prisma } from "../configs/prisma.js";
+import { User } from "../models/user.js";
+import { Project } from "../models/project.js";
 
 // Get User Credits
 export const getUserCredits = async (req: Request, res: Response) => {
@@ -11,12 +12,10 @@ export const getUserCredits = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await User.findOne({ id: userId });
 
     res.json({
-      credits: user?.credits,
+      credits: user?.credits || 0,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -29,14 +28,7 @@ export const getUserCredits = async (req: Request, res: Response) => {
 export const getAllProjects = async (req: Request, res: Response) => {
   try {
     const { userId } = req.auth();
-    const projects = await prisma.project.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const projects = await Project.find({ userId }).sort({ createdAt: -1 });
 
     res.json({ projects });
   } catch (error: any) {
@@ -53,9 +45,7 @@ export const getProjectById = async (req: Request, res: Response) => {
     const projectId = Array.isArray(req.params.projectId)
       ? req.params.projectId[0]
       : req.params.projectId;
-    const project = await prisma.project.findUnique({
-      where: { id: projectId, userId },
-    });
+    const project = await Project.findOne({ _id: projectId, userId });
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -76,11 +66,9 @@ export const toggleProjectPublic = async (req: Request, res: Response) => {
     const projectId = Array.isArray(req.params.projectId)
       ? req.params.projectId[0]
       : req.params.projectId;
-    const project = await prisma.project.findUnique({
-      where: {
-        id: projectId,
-        userId,
-      },
+    const project = await Project.findOne({
+      _id: projectId,
+      userId,
     });
 
     if (!project) {
@@ -95,17 +83,14 @@ export const toggleProjectPublic = async (req: Request, res: Response) => {
       });
     }
 
-    await prisma.project.update({
-      where: {
-        id: projectId,
-      },
-      data: {
-        isPublished: !project.isPublished,
-      },
-    });
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectId,
+      { isPublished: !project.isPublished },
+      { new: true }
+    );
 
     res.json({
-      isPublished: !project.isPublished,
+      isPublished: updatedProject?.isPublished,
     });
   } catch (error: any) {
     res.status(500).json({

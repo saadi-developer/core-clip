@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { verifyWebhook } from "@clerk/express/webhooks";
-import { prisma } from "../configs/prisma.js";
+import { User } from "../models/user.js";
 
 const clerkWebhooks = async (req: Request, res: Response) => {
   try {
@@ -11,46 +11,31 @@ const clerkWebhooks = async (req: Request, res: Response) => {
     // Cases from different events
     switch (type) {
       case "user.created": {
-        await prisma.user.create({
-          data: {
-            id: data.id,
-            email: data?.email_addresses[0]?.email_address,
-            name: data?.first_name + " " + data?.last_name,
-            image: data?.image_url,
-          },
+        const newUser = new User({
+          id: data.id,
+          email: data?.email_addresses[0]?.email_address,
+          name: (data?.first_name || "") + " " + (data?.last_name || ""),
+          image: data?.image_url || "",
         });
+        await newUser.save();
         break;
       }
 
       case "user.updated": {
-        await prisma.user.update({
-          where: {
-            id: data.id,
-          },
-          data: {
+        await User.findOneAndUpdate(
+          { id: data.id },
+          {
             email: data?.email_addresses[0]?.email_address,
-            name: data?.first_name + " " + data?.last_name,
-            image: data?.image_url,
+            name: (data?.first_name || "") + " " + (data?.last_name || ""),
+            image: data?.image_url || "",
           },
-        });
+          { upsert: true }
+        );
         break;
       }
 
       case "user.deleted": {
-        await prisma.user.delete({
-          where: {
-            id: data.id,
-          },
-        });
-        break;
-      }
-
-      case "user.deleted": {
-        await prisma.user.delete({
-          where: {
-            id: data.id,
-          },
-        });
+        await User.deleteOne({ id: data.id });
         break;
       }
 
@@ -73,12 +58,11 @@ const clerkWebhooks = async (req: Request, res: Response) => {
 
           console.log(planId);
 
-          await prisma.user.update({
-            where: { id: clerkUserId },
-            data: {
-              credits: { increment: credits[planId] },
-            },
-          });
+          await User.findOneAndUpdate(
+            { id: clerkUserId },
+            { $inc: { credits: credits[planId] } },
+            { new: true }
+          );
         }
         break;
       }

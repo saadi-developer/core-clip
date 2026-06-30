@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { prisma } from "../configs/prisma.js";
+import { User } from "../models/user.js";
+import { Project } from "../models/project.js";
 import { v2 as cloudinary } from "cloudinary";
 import {
   GenerateContentConfig,
@@ -43,22 +44,19 @@ export async function createProject(req: Request, res: Response) {
     });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
+  const user = await User.findOne({ id: userId });
 
   if (!user || user.credits < 5) {
     return res.status(401).json({ message: "Insufficient credits" });
   } else {
     // deduct credits for image generation
-    await prisma.user
-      .update({
-        where: { id: userId },
-        data: { credits: { decrement: 5 } },
-      })
-      .then(() => {
-        isCreditDeducted = true;
-      });
+    await User.findOneAndUpdate(
+      { id: userId },
+      { $inc: { credits: -5 } },
+      { new: true }
+    ).then(() => {
+      isCreditDeducted = true;
+    });
   }
 
   try {
@@ -71,21 +69,20 @@ export async function createProject(req: Request, res: Response) {
       }),
     );
 
-    const project = await prisma.project.create({
-      data: {
-        name,
-        userId,
-        productName,
-        productDescription,
-        userPrompt,
-        aspectRatio,
-        targetLength: parseInt(targetLength),
-        uploadedImages,
-        isGenerating: true,
-      },
+    const project = new Project({
+      name,
+      userId,
+      productName,
+      productDescription,
+      userPrompt,
+      aspectRatio,
+      targetLength: parseInt(targetLength),
+      uploadedImages,
+      isGenerating: true,
     });
 
-    tempProjectId = project.id;
+    await project.save();
+    tempProjectId = project._id.toString();
 
     // AI integration
     const model = "gemini-3-pro-image-preview";
@@ -160,32 +157,30 @@ export async function createProject(req: Request, res: Response) {
       resource_type: "image",
     });
 
-    await prisma.project.update({
-      where: { id: project.id },
-      data: {
-        generatedImage: uploadResult.secure_url,
-        isGenerating: false,
-      },
+    await Project.findByIdAndUpdate(project._id, {
+      generatedImage: uploadResult.secure_url,
+      isGenerating: false,
     });
 
-    res.json({ projectId: project.id });
+    res.json({ projectId: project._id.toString() });
 
     // error catching
   } catch (error: any) {
-    if (tempProjectId!) {
+    if (tempProjectId) {
       // update project status & error message
-      await prisma.project.update({
-        where: { id: tempProjectId },
-        data: { isGenerating: false, error: error.message },
+      await Project.findByIdAndUpdate(tempProjectId, {
+        isGenerating: false,
+        error: error.message,
       });
     }
 
     if (isCreditDeducted) {
       // add credits back
-      await prisma.user.update({
-        where: { id: userId },
-        data: { credits: { increment: 5 } },
-      });
+      await User.findOneAndUpdate(
+        { id: userId },
+        { $inc: { credits: 5 } },
+        { new: true }
+      );
     }
 
     res.status(500).json({
@@ -196,11 +191,9 @@ export async function createProject(req: Request, res: Response) {
 
 export async function createVideo(req: Request, res: Response) {
   const { userId } = req.auth();
-  const { projectId } = req.body();
+  const { projectId } = req.body;
   let isCreditDeducted = false;
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
+  const user = await User.findOne({ id: userId });
 
   if (!user || user.credits < 10) {
     return res.status(401).json({
@@ -209,20 +202,16 @@ export async function createVideo(req: Request, res: Response) {
   }
 
   // deduct credits for video generation
-  await prisma.user
-    .update({
-      where: { id: userId },
-      data: { credits: { decrement: 10 } },
-    })
-    .then(() => {
-      isCreditDeducted = true;
-    });
+  await User.findOneAndUpdate(
+    { id: userId },
+    { $inc: { credits: -10 } },
+    { new: true }
+  ).then(() => {
+    isCreditDeducted = true;
+  });
 
   try {
-    const project = await prisma.project.findUnique({
-      where: { id: projectId, userId },
-      include: { user: true },
-    });
+    const project = await Project.findOne({ _id: projectId, userId });
 
     if (!project || project.isGenerating) {
       return res.status(404).json({
@@ -236,10 +225,7 @@ export async function createVideo(req: Request, res: Response) {
       });
     }
 
-    await prisma.project.update({
-      where: { id: projectId },
-      data: { isGenerating: true },
-    });
+    await Project.findByIdAndUpdate(projectId, { isGenerating: true });
 
     const prompt = `make the person showcase the product which is ${project.productName} ${project.productDescription && `and Product Description: ${project.productDescription}`}`;
 
@@ -278,7 +264,7 @@ export async function createVideo(req: Request, res: Response) {
     const filename = `${userId}-${Date.now()}.mp4`;
     const filePath = path.join("videos", filename);
 
-    // create images directory if absent
+    // create videos directory if absent
     fs.mkdirSync("videos", { recursive: true });
 
     if (!operation.response.generatedVideo) {
@@ -295,12 +281,9 @@ export async function createVideo(req: Request, res: Response) {
       resource_type: "video",
     });
 
-    await prisma.project.update({
-      where: { id: project.id },
-      data: {
-        generatedVideo: uploadResult.secure_url,
-        isGenerating: false,
-      },
+    await Project.findByIdAndUpdate(projectId, {
+      generatedVideo: uploadResult.secure_url,
+      isGenerating: false,
     });
 
     // remove video file from disk after upload
@@ -312,17 +295,18 @@ export async function createVideo(req: Request, res: Response) {
     });
   } catch (error: any) {
     // update project status & error message
-    await prisma.project.update({
-      where: { id: projectId, userId },
-      data: { isGenerating: false, error: error.message },
+    await Project.findByIdAndUpdate(projectId, {
+      isGenerating: false,
+      error: error.message,
     });
 
     // add credits back
     if (isCreditDeducted) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { credits: { increment: 10 } },
-      });
+      await User.findOneAndUpdate(
+        { id: userId },
+        { $inc: { credits: 10 } },
+        { new: true }
+      );
     }
     res.status(500).json({
       message: error.message,
@@ -332,9 +316,7 @@ export async function createVideo(req: Request, res: Response) {
 
 export async function getAllPublishedProjects(req: Request, res: Response) {
   try {
-    const projects = await prisma.project.findMany({
-      where: { isPublished: true },
-    });
+    const projects = await Project.find({ isPublished: true });
 
     res.json({ projects });
   } catch (error: any) {
@@ -351,17 +333,13 @@ export async function deleteProject(req: Request, res: Response) {
       ? req.params.projectId[0]
       : req.params.projectId;
 
-    const project = await prisma.project.findUnique({
-      where: { id: projectId, userId },
-    });
+    const project = await Project.findOne({ _id: projectId, userId });
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    await prisma.project.delete({
-      where: { id: projectId },
-    });
+    await Project.deleteOne({ _id: projectId });
 
     res.json({ message: "Project deleted" });
   } catch (error: any) {
