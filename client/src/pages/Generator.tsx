@@ -52,7 +52,7 @@ const Generator = () => {
       formData.append("productName", productName);
       formData.append("productDescription", productDescription);
       formData.append("userPrompt", userPrompt);
-      formData.append("aspectRation", aspectRatio);
+      formData.append("aspectRatio", aspectRatio);
       formData.append("images", productImage);
       formData.append("images", modelImage);
 
