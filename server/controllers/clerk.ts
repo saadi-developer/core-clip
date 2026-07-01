@@ -47,8 +47,8 @@ const clerkWebhooks = async (req: Request, res: Response) => {
         ) {
           const credits = { pro: 80, premium: 240 };
           const clerkUserId = data?.payer?.user_id;
-          const planId: keyof typeof credits =
-            data?.subscription_item?.[0]?.plan?.slug;
+          const planSource = data?.subscription_items || data?.subscription_item || [];
+          const planId: keyof typeof credits = planSource?.[0]?.plan?.slug;
 
           if (planId !== "pro" && planId !== "premium") {
             return res.status(400).json({
@@ -56,12 +56,19 @@ const clerkWebhooks = async (req: Request, res: Response) => {
             });
           }
 
-          console.log(planId);
+          console.log("Clerk plan update:", planId);
 
           await User.findOneAndUpdate(
             { id: clerkUserId },
-            { $inc: { credits: credits[planId] } },
-            { new: true }
+            {
+              $inc: { credits: credits[planId] },
+              $setOnInsert: {
+                email: `${clerkUserId}@no-reply.clerk`,
+                name: "Clerk User",
+                image: "",
+              },
+            },
+            { new: true, upsert: true, setDefaultsOnInsert: true },
           );
         }
         break;

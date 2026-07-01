@@ -17,7 +17,7 @@ projectRouter.post(
   createProject,
 );
 projectRouter.post("/video", protect, createVideo);
-projectRouter.get("/published", getAllPublishedProjects);
+projectRouter.get("/published", protect, getAllPublishedProjects);
 projectRouter.delete("/:projectId", protect, deleteProject);
 
 export default projectRouter;

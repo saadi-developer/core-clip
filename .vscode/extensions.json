@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "huggingface.huggingface-vscode-chat",
+    "ms-windows-ai-studio.windows-ai-studio",
+    "andrewbutson.github-copilot-llm-gateway"
+  ]
+}

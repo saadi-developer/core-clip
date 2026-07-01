@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
-  _id: string;
   id: string; // Clerk user ID
   email: string;
   name: string;

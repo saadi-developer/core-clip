@@ -67,6 +67,7 @@ Create professional marketing videos and product imagery in seconds using AI. Si
    Server runs at `http://localhost:5000`
 
 3. **Frontend Setup**
+
    ```bash
    cd ../client
    npm install
@@ -74,11 +75,12 @@ Create professional marketing videos and product imagery in seconds using AI. Si
    # Edit .env with your credentials
    npm run client
    ```
+
    Frontend runs at `http://localhost:5173`
 
 ## 📁 Project Structure
 
-```
+```cmd
 core-clip/
 ├── client/                 # React frontend
 │   ├── src/
@@ -115,14 +117,14 @@ core-clip/
 
 ### Client
 
-```
+```env
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key
 VITE_BASEURL=http://localhost:5000
 ```
 
 ### Server
 
-```
+```env
 MONGODB_URI=mongodb+srv://username:password@cluster/coreclip
 CLERK_PUBLISHABLE_KEY=your_clerk_key
 CLERK_SECRET_KEY=your_clerk_secret

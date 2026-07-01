@@ -2,6 +2,21 @@ import { Request, Response } from "express";
 import { User } from "../models/user.js";
 import { Project } from "../models/project.js";
 
+const ensureUserRecord = async (userId: string) => {
+  return await User.findOneAndUpdate(
+    { id: userId },
+    {
+      $setOnInsert: {
+        email: `${userId}@no-reply.clerk`,
+        name: "Clerk User",
+        image: "",
+        credits: 20,
+      },
+    },
+    { new: true, upsert: true, setDefaultsOnInsert: true },
+  );
+};
+
 // Get User Credits
 export const getUserCredits = async (req: Request, res: Response) => {
   try {
@@ -12,7 +27,7 @@ export const getUserCredits = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await User.findOne({ id: userId });
+    const user = await ensureUserRecord(userId);
 
     res.json({
       credits: user?.credits || 0,
@@ -30,7 +45,12 @@ export const getAllProjects = async (req: Request, res: Response) => {
     const { userId } = req.auth();
     const projects = await Project.find({ userId }).sort({ createdAt: -1 });
 
-    res.json({ projects });
+    const formattedProjects = projects.map((project) => ({
+      ...project.toObject(),
+      id: project._id.toString(),
+    }));
+
+    res.json({ projects: formattedProjects });
   } catch (error: any) {
     res.status(500).json({
       message: error.code || error.message,
@@ -51,7 +71,12 @@ export const getProjectById = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    res.json({ project });
+    const formattedProject = {
+      ...project.toObject(),
+      id: project._id.toString(),
+    };
+
+    res.json({ project: formattedProject });
   } catch (error: any) {
     res.status(500).json({
       message: error.code || error.message,
@@ -90,7 +115,14 @@ export const toggleProjectPublic = async (req: Request, res: Response) => {
     );
 
     res.json({
+      message: updatedProject?.isPublished
+        ? "Project published successfully"
+        : "Project unpublished successfully",
       isPublished: updatedProject?.isPublished,
+      project: {
+        ...updatedProject?.toObject(),
+        id: updatedProject?._id.toString(),
+      },
     });
   } catch (error: any) {
     res.status(500).json({
