@@ -140,7 +140,7 @@ const ProjectCard = ({
                 >
                   {gen.generatedImage && (
                     <a
-                      href="#"
+                      href={gen.generatedImage}
                       download
                       className="flex gap-2 items-center px-4 py-2 hover:bg-black/50 cursor-pointer"
                     >
@@ -150,7 +150,7 @@ const ProjectCard = ({
 
                   {gen.generatedVideo && (
                     <a
-                      href="#"
+                      href={gen.generatedVideo}
                       download
                       className="flex gap-2 items-center px-4 py-2 hover:bg-black/50 cursor-pointer"
                     >

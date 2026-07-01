@@ -1,8 +1,10 @@
 import { ArrowRightIcon, PlayIcon, ZapIcon, CheckIcon } from "lucide-react";
 import { PrimaryButton, GhostButton } from "./Buttons";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
   const trustedUserImages = [
     "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=50",
     "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50",
@@ -106,17 +108,25 @@ export default function Hero() {
                   delay: 0.3,
                 }}
               >
-                <a href="/" className="w-full sm:w-auto">
-                  <PrimaryButton className="max-sm:w-full py-3 px-7">
-                    Start Generating
-                    <ArrowRightIcon className="size-4" />
-                  </PrimaryButton>
-                </a>
+                <button
+                type="button"
+                onClick={() => navigate("/generate")}
+                className="w-full sm:w-auto"
+              >
+                <PrimaryButton className="max-sm:w-full py-3 px-7">
+                  Start Generating
+                  <ArrowRightIcon className="size-4" />
+                </PrimaryButton>
+              </button>
 
-                <GhostButton className="max-sm:w-full max-sm:justify-center py-3 px-5 text-pink-400">
-                  <PlayIcon className="size-4" />
-                  Watch Demo
-                </GhostButton>
+              <GhostButton
+                type="button"
+                onClick={() => navigate("/community")}
+                className="max-sm:w-full max-sm:justify-center py-3 px-5 text-pink-400"
+              >
+                <PlayIcon className="size-4" />
+                Watch Demo
+              </GhostButton>
               </motion.div>
 
               <motion.div

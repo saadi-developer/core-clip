@@ -89,7 +89,7 @@ const Generator = () => {
             <UploadZone
               label="Model Image"
               file={modelImage}
-              onClear={() => setProductImage(null)}
+              onClear={() => setModelImage(null)}
               onChange={(e) => handleFileChange(e, "model")}
             />
           </div>
