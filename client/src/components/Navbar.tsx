@@ -18,13 +18,13 @@ import { toast } from "react-hot-toast";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, isLoaded: isUserLoaded } = useUser();
   const { openSignIn, openSignUp } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
 
   const [credits, setCredits] = useState(0);
   const { pathname } = useLocation();
-  const { getToken } = useAuth();
+  const { getToken, isLoaded } = useAuth();
 
   const navLinks = [
     { name: "Home", href: "/#" },
@@ -47,10 +47,14 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    if (!isLoaded || !isUserLoaded) return;
+
     if (user) {
       (async () => await getUserCredits())();
+    } else {
+      setCredits(0);
     }
-  }, [user, pathname]);
+  }, [user, isLoaded, isUserLoaded, pathname]);
 
   return (
     <motion.nav

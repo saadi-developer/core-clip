@@ -6,14 +6,23 @@ import { Loader2Icon } from "lucide-react";
 import ProjectCard from "../components/ProjectCard";
 import api from "../configs/axios";
 import { toast } from "react-hot-toast";
+import { useAuth, useUser, useClerk } from "@clerk/react";
 
 const Community = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
+  const { openSignIn } = useClerk();
 
   const fetchProjects = async () => {
+    if (!user) return;
+
     try {
-      const { data } = await api.get("/api/project/published");
+      const token = await getToken();
+      const { data } = await api.get("/api/project/published", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setProjects(data.projects);
       setLoading(false);
     } catch (error: any) {
@@ -23,8 +32,14 @@ const Community = () => {
   };
 
   useEffect(() => {
+    if (!isLoaded) return;
+    if (!user) {
+      openSignIn();
+      return;
+    }
+
     fetchProjects();
-  }, []);
+  }, [isLoaded, user]);
 
   return loading ? (
     <div className="flex items-center justify-center min-h-screen">

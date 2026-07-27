@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import { clerkMiddleware } from "@clerk/express";
+import { connectDB } from "./configs/prisma.js";
 import clerkWebhooks from "./controllers/clerk.js";
 import userRouter from "./routes/userRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
@@ -49,6 +50,10 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/user", userRouter);
 app.use("/api/project", projectRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+// Connect to MongoDB and start server
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+  });
 });
+

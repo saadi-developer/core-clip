@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { verifyWebhook } from "@clerk/express/webhooks";
-import { prisma } from "../configs/prisma.js";
+import { User } from "../models/user.js";
 
 const clerkWebhooks = async (req: Request, res: Response) => {
   try {
@@ -11,46 +11,31 @@ const clerkWebhooks = async (req: Request, res: Response) => {
     // Cases from different events
     switch (type) {
       case "user.created": {
-        await prisma.user.create({
-          data: {
-            id: data.id,
-            email: data?.email_addresses[0]?.email_address,
-            name: data?.first_name + " " + data?.last_name,
-            image: data?.image_url,
-          },
+        const newUser = new User({
+          id: data.id,
+          email: data?.email_addresses[0]?.email_address,
+          name: (data?.first_name || "") + " " + (data?.last_name || ""),
+          image: data?.image_url || "",
         });
+        await newUser.save();
         break;
       }
 
       case "user.updated": {
-        await prisma.user.update({
-          where: {
-            id: data.id,
-          },
-          data: {
+        await User.findOneAndUpdate(
+          { id: data.id },
+          {
             email: data?.email_addresses[0]?.email_address,
-            name: data?.first_name + " " + data?.last_name,
-            image: data?.image_url,
+            name: (data?.first_name || "") + " " + (data?.last_name || ""),
+            image: data?.image_url || "",
           },
-        });
+          { upsert: true }
+        );
         break;
       }
 
       case "user.deleted": {
-        await prisma.user.delete({
-          where: {
-            id: data.id,
-          },
-        });
-        break;
-      }
-
-      case "user.deleted": {
-        await prisma.user.delete({
-          where: {
-            id: data.id,
-          },
-        });
+        await User.deleteOne({ id: data.id });
         break;
       }
 
@@ -62,8 +47,8 @@ const clerkWebhooks = async (req: Request, res: Response) => {
         ) {
           const credits = { pro: 80, premium: 240 };
           const clerkUserId = data?.payer?.user_id;
-          const planId: keyof typeof credits =
-            data?.subscription_item?.[0]?.plan?.slug;
+          const planSource = data?.subscription_items || data?.subscription_item || [];
+          const planId: keyof typeof credits = planSource?.[0]?.plan?.slug;
 
           if (planId !== "pro" && planId !== "premium") {
             return res.status(400).json({
@@ -71,14 +56,20 @@ const clerkWebhooks = async (req: Request, res: Response) => {
             });
           }
 
-          console.log(planId);
+          console.log("Clerk plan update:", planId);
 
-          await prisma.user.update({
-            where: { id: clerkUserId },
-            data: {
-              credits: { increment: credits[planId] },
+          await User.findOneAndUpdate(
+            { id: clerkUserId },
+            {
+              $inc: { credits: credits[planId] },
+              $setOnInsert: {
+                email: `${clerkUserId}@no-reply.clerk`,
+                name: "Clerk User",
+                image: "",
+              },
             },
-          });
+            { new: true, upsert: true, setDefaultsOnInsert: true },
+          );
         }
         break;
       }

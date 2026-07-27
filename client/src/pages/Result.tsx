@@ -48,7 +48,7 @@ const Results = () => {
     try {
       const token = await getToken();
       const { data } = await api.post(
-        "/api/projects/video",
+        "/api/project/video",
         { projectId },
         {
           headers: { Authorization: `Bearer ${token}` },

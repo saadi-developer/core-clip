@@ -1,10 +1,24 @@
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client.js";
+import mongoose from "mongoose";
 
-const connectionString = `${process.env.DATABASE_URL}`;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/coreclip";
 
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+let isConnected = false;
 
-export { prisma };
+export async function connectDB() {
+  if (isConnected) {
+    console.log("Already connected to MongoDB");
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGODB_URI);
+    isConnected = true;
+    console.log("Connected to MongoDB");
+  } catch (error: any) {
+    console.error("Failed to connect to MongoDB:", error.message);
+    process.exit(1);
+  }
+}
+
+export { mongoose };
